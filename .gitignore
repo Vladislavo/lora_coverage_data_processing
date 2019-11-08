@@ -1,0 +1,4 @@
+.vscode/
+venv/*
+lca_data.csv
+coverage_map.html
