@@ -10,7 +10,7 @@ access_key = "ttn-account-v2.g98qkQPAsfJAHqmClm8vNQtl7d4_k_IF_fI5X0-N0iM"
 
 def uplink_callback(msg, client):
   print("Received uplink from ", msg.dev_id)
-  print(msg)
+  #print(msg)
   print("dev_lattitude : ", msg.payload_fields.lattitude, 
         ", dev_longitude : ", msg.payload_fields.longitude, 
         ", rssi : ", msg.payload_fields.rssi, 
@@ -25,7 +25,7 @@ def uplink_callback(msg, client):
                               msg.payload_fields.longitude, 
                               msg.payload_fields.rssi, 
                               msg.payload_fields.snr,
-                              msg.metadata.gateways[0].lattitude,
+                              msg.metadata.gateways[0].latitude,
                               msg.metadata.gateways[0].longitude])
       csvf.close()
 
@@ -43,19 +43,26 @@ csvf.close()
 
 connection_setup(app_id, access_key, uplink_callback)
 
+handler = ttn.HandlerClient(app_id, access_key)
+
+mqtt_client = handler.data()
+mqtt_client.set_uplink_callback(uplink_callback)
+mqtt_client.connect()
+
 while True:
   try:
+    time.sleep(10)
+  except KeyboardInterrupt:
+    sys.exit()
+  except:
+    mqtt_client.close()
+
+    connection_setup(app_id, access_key, uplink_callback)
     handler = ttn.HandlerClient(app_id, access_key)
 
     mqtt_client = handler.data()
     mqtt_client.set_uplink_callback(uplink_callback)
     mqtt_client.connect()
-    time.sleep(20)
-    mqtt_client.close()
-  except KeyboardInterrupt:
-    sys.exit()
-  except:
-    connection_setup(app_id, access_key, uplink_callback)
     continue
 
   
