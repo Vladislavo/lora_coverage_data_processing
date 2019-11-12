@@ -5,12 +5,13 @@ import sys
 
 from itertools import chain
 
+import time
+
 app_id = "app_lora_coverage_analyzer"
 access_key = "ttn-account-v2.g98qkQPAsfJAHqmClm8vNQtl7d4_k_IF_fI5X0-N0iM"
 
 def uplink_callback(msg, client):
-  print("Received uplink from ", msg.dev_id)
-  #print(msg)
+  print("[{0}] Received uplink from {1}".format(time.time(),  msg.dev_id))
   print("dev_lattitude : ", msg.payload_fields.lattitude, 
         ", dev_longitude : ", msg.payload_fields.longitude, 
         ", rssi : ", msg.payload_fields.rssi, 
